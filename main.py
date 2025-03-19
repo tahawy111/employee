@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk  # Import Pillow for image processing
 
 root = Tk()
 # ===== Globals =====
@@ -7,14 +8,27 @@ GFont = ("Calibri", 16)
 primaryColor = "#2c3e50"
 
 root.title("Employee Management System")
-root.geometry("1210x615+0+0")
+root.geometry("1240x615+0+0")
 root.resizable(False, False)
 root.configure(bg=primaryColor)
 
+# ===== Resize Image to Fit Width =====
+target_width = 100  # Set the desired width (same as Label width)
+image = Image.open("logo.png")  # Open the image
+aspect_ratio = image.height / image.width  # Calculate aspect ratio
+new_height = int(target_width * aspect_ratio)  # Scale height
+# Resize while keeping quality
+resized_image = image.resize((target_width, new_height), Image.LANCZOS)
 
-logo = PhotoImage(file="logo.png")
+# Convert image for Tkinter
+logo = ImageTk.PhotoImage(resized_image)
+
+# Create and place the image label
 lbl_logo = Label(root, image=logo, bg=primaryColor)
-lbl_logo.place(x=80, y=520,)
+lbl_logo.place(x=80, y=510, width=target_width, height=new_height)
+
+# Prevent garbage collection
+lbl_logo.image = logo
 
 # ===== Entries Frame =====
 entries_frame = Frame(root, bg=primaryColor)
@@ -81,9 +95,9 @@ btnClear = Button(btn_frame, text="Clear Details", width=14, font=GFont,
                   height=1, fg="white", bg="#f39c12", bd=0).place(x=170, y=50)
 # ===== [Table Frame] =====
 tree_frame = Frame(root, bg="white")
-tree_frame.place(x=365, y=0, width=875, height=610)
+tree_frame.place(x=365, y=0, width=875, height=700)
 style = ttk.Style()
-style.configure("mystyle.Treeview", font=("Calibri", 13), rowheight=50)
+style.configure("mystyle.Treeview", font=("Calibri", 13), rowheight=50, pd=0)
 style.configure("mystyle.Treeview.Heading", font=("Calibri", 13))
 tv = ttk.Treeview(tree_frame, columns=(
     1, 2, 3, 4, 5, 6, 7, 8), style="mystyle.Treeview")
@@ -102,7 +116,7 @@ tv.column("6", width=90)
 tv.heading("7", text="Mobile")
 tv.column("7", width=150)
 tv.heading("8", text="Address")
-tv.column("8", width=120)
+tv.column("8", width=150)
 tv["show"] = "headings"
 tv.pack()
 
