@@ -95,9 +95,9 @@ btnClear = Button(btn_frame, text="Clear Details", width=14, font=GFont,
                   height=1, fg="white", bg="#f39c12", bd=0).place(x=170, y=50)
 # ===== [Table Frame] =====
 tree_frame = Frame(root, bg="white")
-tree_frame.place(x=365, y=0, width=875, height=700)
+tree_frame.place(x=365, y=0, width=875, height=610,)
 style = ttk.Style()
-style.configure("mystyle.Treeview", font=("Calibri", 13), rowheight=50, pd=0)
+style.configure("mystyle.Treeview", font=("Calibri", 13), rowheight=50, )
 style.configure("mystyle.Treeview.Heading", font=("Calibri", 13))
 tv = ttk.Treeview(tree_frame, columns=(
     1, 2, 3, 4, 5, 6, 7, 8), style="mystyle.Treeview")
@@ -118,7 +118,7 @@ tv.column("7", width=150)
 tv.heading("8", text="Address")
 tv.column("8", width=150)
 tv["show"] = "headings"
-tv.pack()
+tv.place(x=1, y=1, height=610)
 
 
 root.mainloop()
