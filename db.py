@@ -32,10 +32,10 @@ class Database:
         return rows
 
     def remove(self, id):
-        self.cur.execute("delete from employees where id=?", (id))
-        rows = self.cur.fetchall()
+        self.cur.execute("DELETE FROM employees WHERE id=?", (id,))
+        self.con.commit()
 
     def update(self, id, name, age, job, email, gender, mobile, address):
         self.cur.execute(
-            "update employees ser name=?,age=?,job=?,email=?,gender=?,mobile=?,address=? where id=?", (name, age, job, email, gender, mobile, address, id))
+            "update employees set name=?,age=?,job=?,email=?,gender=?,mobile=?,address=? where id=?", (name, age, job, email, gender, mobile, address, id))
         self.con.commit()

@@ -111,6 +111,16 @@ btn_show = Button(entries_frame, text="SHOW", cursor="hand2", bg="white", bd=1, 
                   command=show).place(x=310, y=10)
 
 
+def Clear():
+    name.set("")
+    age.set("")
+    job.set("")
+    email.set("")
+    gender.set("")
+    mobile.set("")
+    txtAddress.delete(1.0, END)
+
+
 def getData(event):
     selected_row = tv.focus()
     data = tv.item(selected_row)
@@ -142,6 +152,26 @@ def add_employee():
     )
     messagebox.showinfo("Success", "Added new employee")
     displayAll()
+    Clear()
+
+
+def update_employee():
+    if txtName.get() == "" or txtAge.get() == "" or txtJob.get() == "" or txtEmail.get() == "" or comboGender.get() == "" or txtMobile.get() == "" or txtAddress.get(1.0, END) == "":
+        messagebox.showerror("Error", "Please fill in all the entries")
+        return
+
+    db.update(row[0], txtName.get(), txtAge.get(), txtJob.get(),
+              txtEmail.get(), comboGender.get(), txtMobile.get(), txtAddress.get(1.0, END))
+
+    messagebox.showinfo("Success", "Employee details updated successfully")
+    displayAll()
+    Clear()
+
+
+def delete():
+    db.remove(row[0])
+    Clear()
+    displayAll()
 
 
 # ===== Buttons =====
@@ -149,11 +179,11 @@ btn_frame = Frame(entries_frame, bg=primaryColor, bd=1, relief=SOLID)
 btn_frame.place(x=10, y=400, width=335, height=100)
 btnAdd = Button(btn_frame, text="Add Details", command=add_employee, width=14, font=GFont,
                 height=1, fg="white", bg="#16a085", bd=0).place(x=4, y=5)
-btnEdit = Button(btn_frame, text="Update Details", width=14, font=GFont,
+btnEdit = Button(btn_frame, text="Update Details", command=update_employee, width=14, font=GFont,
                  height=1, fg="white", bg="#2980b9", bd=0).place(x=4, y=50)
 btnDelete = Button(btn_frame, text="Delete Details", width=14, font=GFont,
-                   height=1, fg="white", bg="#c0392b", bd=0).place(x=170, y=5)
-btnClear = Button(btn_frame, text="Clear Details", width=14, font=GFont,
+                   height=1, fg="white", bg="#c0392b", command=delete, bd=0).place(x=170, y=5)
+btnClear = Button(btn_frame, text="Clear Details", command=Clear, width=14, font=GFont,
                   height=1, fg="white", bg="#f39c12", bd=0).place(x=170, y=50)
 # ===== [Table Frame] =====
 tree_frame = Frame(root, bg="white")
