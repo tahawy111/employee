@@ -1,6 +1,17 @@
 from tkinter import *
-from tkinter import ttk
-from PIL import Image, ImageTk  # Import Pillow for image processing
+from tkinter import ttk, messagebox
+from PIL import Image, ImageTk
+from db import Database
+
+db = Database("Employee.db")
+
+name = StringVar()
+age = StringVar()
+job = StringVar()
+email = StringVar()
+gender = StringVar()
+mobile = StringVar()
+address = StringVar()
 
 root = Tk()
 # ===== Globals =====
@@ -13,7 +24,7 @@ root.resizable(False, False)
 root.configure(bg=primaryColor)
 
 # ===== Resize Image to Fit Width =====
-target_width = 100  # Set the desired width (same as Label width)
+target_width = 200  # Set the desired width (same as Label width)
 image = Image.open("logo.png")  # Open the image
 aspect_ratio = image.height / image.width  # Calculate aspect ratio
 new_height = int(target_width * aspect_ratio)  # Scale height
@@ -25,10 +36,11 @@ logo = ImageTk.PhotoImage(resized_image)
 
 # Create and place the image label
 lbl_logo = Label(root, image=logo, bg=primaryColor)
-lbl_logo.place(x=80, y=510, width=target_width, height=new_height)
+lbl_logo.place(x=65, y=475, width=target_width, height=new_height)
 
 # Prevent garbage collection
 lbl_logo.image = logo
+
 
 # ===== Entries Frame =====
 entries_frame = Frame(root, bg=primaryColor)
@@ -41,39 +53,39 @@ title.place(x=10, y=1)
 lblName = Label(entries_frame, text="Name",
                 font=GFont, bg=primaryColor, fg="white",)
 lblName.place(x=10, y=50)
-txtName = Entry(entries_frame, width=20, font=GFont,)
+txtName = Entry(entries_frame, width=20, textvariable=name, font=GFont,)
 txtName.place(x=120, y=50)
 # Job Input
 lblJob = Label(entries_frame, text="Job",
                font=GFont, bg=primaryColor, fg="white",)
 lblJob.place(x=10, y=90)
-txtJob = Entry(entries_frame, width=20, font=GFont,)
+txtJob = Entry(entries_frame, width=20, textvariable=job, font=GFont,)
 txtJob.place(x=120, y=90)
 # Gender Combobox
 lblGender = Label(entries_frame, text="Gender",
                   font=GFont, bg=primaryColor, fg="white",)
 lblGender.place(x=10, y=130)
 comboGender = ttk.Combobox(
-    entries_frame, state="readonly", width=18, font=GFont)
+    entries_frame, state="readonly", width=18, textvariable=gender, font=GFont)
 comboGender["values"] = ("Male", "Female")
 comboGender.place(x=120, y=130)
 # Age Input
 lblAge = Label(entries_frame, text="Age",
                font=GFont, bg=primaryColor, fg="white",)
 lblAge.place(x=10, y=170)
-txtAge = Entry(entries_frame, width=20, font=GFont,)
+txtAge = Entry(entries_frame, width=20, textvariable=age, font=GFont,)
 txtAge.place(x=120, y=170)
 # Email Input
 lblEmail = Label(entries_frame, text="Email",
                  font=GFont, bg=primaryColor, fg="white",)
 lblEmail.place(x=10, y=210)
-txtEmail = Entry(entries_frame, width=20, font=GFont,)
+txtEmail = Entry(entries_frame, width=20, textvariable=email, font=GFont,)
 txtEmail.place(x=120, y=210)
 # Contact Input
 lblContact = Label(entries_frame, text="Mobile",
                    font=GFont, bg=primaryColor, fg="white",)
 lblContact.place(x=10, y=250)
-txtContact = Entry(entries_frame, width=20, font=GFont,)
+txtContact = Entry(entries_frame, width=20, textvariable=mobile, font=GFont,)
 txtContact.place(x=120, y=250)
 # Address Input
 lblAddress = Label(entries_frame, text="Address:",
@@ -81,6 +93,55 @@ lblAddress = Label(entries_frame, text="Address:",
 lblAddress.place(x=10, y=290)
 txtAddress = Text(entries_frame, width=30, height=2, font=GFont)
 txtAddress.place(x=10, y=330)
+
+# ===== [Define] =====
+
+
+def hide():
+    root.geometry("375x510")
+
+
+def show():
+    root.geometry("1240x615+0+0")
+
+
+btn_hide = Button(entries_frame, text="HIDE", cursor="hand2", bg="white", bd=1, relief=SOLID,
+                  command=hide).place(x=270, y=10)
+btn_show = Button(entries_frame, text="SHOW", cursor="hand2", bg="white", bd=1, relief=SOLID,
+                  command=show).place(x=310, y=10)
+
+
+def getData():
+    selected_row = tv.focus()
+    data = tv.item(selected_row)
+    global row
+    row = data["values"]
+    name.set(row[1])
+    age.set(row[2])
+    job.set(row[3])
+    email.set(row[4])
+    gender.set(row[5])
+    mobile.set(row[6])
+    txtAddress.delete(1.0, END)
+    txtAddress.insert(END, row[7])
+
+
+def displayAll():
+    tv.delete(*tv.get_children())
+    for row in db.fetch():
+        tv.insert("", values=row)
+
+
+def add_employee():
+    if txtName.get() == "" or txtAge.get() == "" or txtJob.get() == "" or txtEmail.get() == "" or comboGender.get() == "" or txtContact.get() == "" or txtAddress.get(1.0, END) == "":
+        messagebox.showerror("Error", "Please fill in all the entries")
+        return
+    db.insert(
+        txtName.get(), txtAge.get(), txtJob.get(
+        ), txtEmail.get(), comboGender.get(), txtContact.get(), txtAddress.get(1.0, EN)
+    )
+    messagebox.showinfo("Success")
+
 
 # ===== Buttons =====
 btn_frame = Frame(entries_frame, bg=primaryColor, bd=1, relief=SOLID)
