@@ -7,15 +7,16 @@ class Database:
         self.cur = self.con.cursor()
 
         sql = """
-    `id` INT PRIMARY KEY,
-    `name` TEXT,
-    `age` TEXT,
-    `job` TEXT,
-    `email` TEXT,
-    `gender` TEXT,
-    `mobile` TEXT,
-    `address` TEXT,
-        )
+        CREATE TABLE IF NOT EXISTS employees (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            age TEXT,
+            job TEXT,
+            email TEXT,
+            gender TEXT,
+            mobile TEXT,
+            address TEXT
+        );
         """
         self.cur.execute(sql)
         self.con.commit()

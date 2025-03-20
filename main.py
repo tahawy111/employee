@@ -5,14 +5,6 @@ from db import Database
 
 db = Database("Employee.db")
 
-name = StringVar()
-age = StringVar()
-job = StringVar()
-email = StringVar()
-gender = StringVar()
-mobile = StringVar()
-address = StringVar()
-
 root = Tk()
 # ===== Globals =====
 GFont = ("Calibri", 16)
@@ -22,6 +14,14 @@ root.title("Employee Management System")
 root.geometry("1240x615+0+0")
 root.resizable(False, False)
 root.configure(bg=primaryColor)
+
+name = StringVar()
+age = StringVar()
+job = StringVar()
+email = StringVar()
+gender = StringVar()
+mobile = StringVar()
+address = StringVar()
 
 # ===== Resize Image to Fit Width =====
 target_width = 200  # Set the desired width (same as Label width)
@@ -81,12 +81,12 @@ lblEmail = Label(entries_frame, text="Email",
 lblEmail.place(x=10, y=210)
 txtEmail = Entry(entries_frame, width=20, textvariable=email, font=GFont,)
 txtEmail.place(x=120, y=210)
-# Contact Input
-lblContact = Label(entries_frame, text="Mobile",
-                   font=GFont, bg=primaryColor, fg="white",)
-lblContact.place(x=10, y=250)
-txtContact = Entry(entries_frame, width=20, textvariable=mobile, font=GFont,)
-txtContact.place(x=120, y=250)
+# Mobile Input
+lblMobile = Label(entries_frame, text="Mobile",
+                  font=GFont, bg=primaryColor, fg="white",)
+lblMobile.place(x=10, y=250)
+txtMobile = Entry(entries_frame, width=20, textvariable=mobile, font=GFont,)
+txtMobile.place(x=120, y=250)
 # Address Input
 lblAddress = Label(entries_frame, text="Address:",
                    font=GFont, bg=primaryColor, fg="white",)
@@ -111,7 +111,7 @@ btn_show = Button(entries_frame, text="SHOW", cursor="hand2", bg="white", bd=1, 
                   command=show).place(x=310, y=10)
 
 
-def getData():
+def getData(event):
     selected_row = tv.focus()
     data = tv.item(selected_row)
     global row
@@ -129,24 +129,25 @@ def getData():
 def displayAll():
     tv.delete(*tv.get_children())
     for row in db.fetch():
-        tv.insert("", values=row)
+        tv.insert("", "end", values=row)
 
 
 def add_employee():
-    if txtName.get() == "" or txtAge.get() == "" or txtJob.get() == "" or txtEmail.get() == "" or comboGender.get() == "" or txtContact.get() == "" or txtAddress.get(1.0, END) == "":
+    if txtName.get() == "" or txtAge.get() == "" or txtJob.get() == "" or txtEmail.get() == "" or comboGender.get() == "" or txtMobile.get() == "" or txtAddress.get(1.0, END) == "":
         messagebox.showerror("Error", "Please fill in all the entries")
         return
     db.insert(
         txtName.get(), txtAge.get(), txtJob.get(
-        ), txtEmail.get(), comboGender.get(), txtContact.get(), txtAddress.get(1.0, EN)
+        ), txtEmail.get(), comboGender.get(), txtMobile.get(), txtAddress.get(1.0, END)
     )
-    messagebox.showinfo("Success")
+    messagebox.showinfo("Success", "Added new employee")
+    displayAll()
 
 
 # ===== Buttons =====
 btn_frame = Frame(entries_frame, bg=primaryColor, bd=1, relief=SOLID)
 btn_frame.place(x=10, y=400, width=335, height=100)
-btnAdd = Button(btn_frame, text="Add Details", width=14, font=GFont,
+btnAdd = Button(btn_frame, text="Add Details", command=add_employee, width=14, font=GFont,
                 height=1, fg="white", bg="#16a085", bd=0).place(x=4, y=5)
 btnEdit = Button(btn_frame, text="Update Details", width=14, font=GFont,
                  height=1, fg="white", bg="#2980b9", bd=0).place(x=4, y=50)
@@ -179,7 +180,9 @@ tv.column("7", width=150)
 tv.heading("8", text="Address")
 tv.column("8", width=150)
 tv["show"] = "headings"
+tv.bind("<ButtonRelease-1>", getData)
 tv.place(x=1, y=1, height=610)
 
+displayAll()
 
 root.mainloop()
