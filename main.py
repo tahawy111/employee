@@ -14,6 +14,8 @@ root.title("Employee Management System")
 root.geometry("1240x615+0+0")
 root.resizable(False, False)
 root.configure(bg=primaryColor)
+root.iconbitmap("logo.ico")
+
 
 name = StringVar()
 age = StringVar()
@@ -150,8 +152,8 @@ def add_employee():
         txtName.get(), txtAge.get(), txtJob.get(
         ), txtEmail.get(), comboGender.get(), txtMobile.get(), txtAddress.get(1.0, END)
     )
-    messagebox.showinfo("Success", "Added new employee")
     displayAll()
+    messagebox.showinfo("Success", "Added new employee")
     Clear()
 
 
@@ -163,8 +165,8 @@ def update_employee():
     db.update(row[0], txtName.get(), txtAge.get(), txtJob.get(),
               txtEmail.get(), comboGender.get(), txtMobile.get(), txtAddress.get(1.0, END))
 
-    messagebox.showinfo("Success", "Employee details updated successfully")
     displayAll()
+    messagebox.showinfo("Success", "Employee details updated successfully")
     Clear()
 
 
